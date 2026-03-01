@@ -1,0 +1,62 @@
+name: Docker Image Build
+run-name: ${{ gitea.event.head_commit.message }}
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    runs-on: dind
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create Kubeconfig
+        run: |
+          mkdir $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_BUILDX }}" > $HOME/.kube/config
+      - name: Install Docker
+        run: curl -fsSL https://get.docker.com | sh
+      - name: Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: kubernetes
+          driver-opts: |
+            namespace=git
+            qemu.install=true
+            qemu.image=tonistiigi/binfmt@sha256:d3b963f787999e6c0219a48dba02978769286ff61a5f4d26245cb6a6e5567ea3
+            nodeselector=kubernetes.io/arch=amd64
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.OWN_REGISTRY }}
+          username: ${{ vars.OWN_REGISTRY_USER }}
+          password: ${{ secrets.OWN_REGISTRY_PASSWORD }}
+          logout: true
+      - name: Determine Version
+        id: gitversion
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+          echo "Latest tag: $LATEST_TAG"
+          COMMITS_SINCE=$(git rev-list ${LATEST_TAG}..HEAD --count 2>/dev/null || echo "0")
+          echo "Commits since tag: $COMMITS_SINCE"
+          MAJOR=$(echo $LATEST_TAG | sed 's/^v//' | cut -d. -f1)
+          MINOR=$(echo $LATEST_TAG | sed 's/^v//' | cut -d. -f2)
+          PATCH=$(echo $LATEST_TAG | sed 's/^v//' | cut -d. -f3)
+          VERSION="${MAJOR}.${MINOR}.${PATCH}.${COMMITS_SINCE}"
+          echo "assemblySemVer=$VERSION" >> $GITHUB_OUTPUT
+          echo "Determined version: $VERSION"
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ vars.OWN_REGISTRY }}/unimain/telegram-bot-mcp:${{ steps.gitversion.outputs.assemblySemVer }}
+      - name: Cleanup Builder
+        if: always()
+        run: |
+          docker buildx rm $(docker buildx ls --format '{{.Name}}' | grep -v default | head -1) 2>/dev/null || true
