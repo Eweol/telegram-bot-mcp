@@ -8,12 +8,10 @@ WORKDIR /app
 ARG VERSION=1.0.4
 RUN npm install @node2flow/telegram-bot-mcp@${VERSION}
 
-# Non-root user
-RUN addgroup -g 1000 appuser && \
-    adduser -D -s /bin/sh -u 1000 -G appuser appuser && \
-    chown -R appuser:appuser /app
+# node:20-alpine already has a 'node' user (uid/gid 1000)
+RUN chown -R node:node /app
 
-USER appuser
+USER node
 
 ENV TELEGRAM_BOT_TOKEN="" \
     PORT=8000
