@@ -148,3 +148,11 @@ class TelegramBot:
             chat_id=chat_id,
             message_id=message_id,
         )
+
+    async def get_updates(self, offset: int | None = None, limit: int = 100) -> list:
+        return await self._call(  # type: ignore[return-value]
+            "getUpdates",
+            offset=offset,
+            limit=limit,
+            timeout=0,
+        )
