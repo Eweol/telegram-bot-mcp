@@ -25,12 +25,11 @@ class TelegramBot:
         payload = {k: v for k, v in params.items() if v is not None}
         async with httpx.AsyncClient(timeout=30) as client:
             resp = await client.post(f"{self._base}/{method}", json=payload)
-            resp.raise_for_status()
             data = resp.json()
         if not data.get("ok"):
             raise TelegramError(
                 data.get("description", "Unknown error"),
-                data.get("error_code", 0),
+                data.get("error_code", resp.status_code),
             )
         return data["result"]
 
