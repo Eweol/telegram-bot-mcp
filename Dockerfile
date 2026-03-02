@@ -3,12 +3,10 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-# Install dependencies first (cached layer)
+# Copy source and metadata together — hatchling needs src/ at build time
 COPY pyproject.toml README.md ./
-RUN pip install --no-cache-dir .
-
-# Copy source
 COPY src/ src/
+RUN pip install --no-cache-dir .
 
 # Non-root user for security
 RUN useradd -r -u 1000 -g users mcp
