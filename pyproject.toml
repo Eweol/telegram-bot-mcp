@@ -1,0 +1,25 @@
+[project]
+name = "telegram-bot-mcp"
+version = "1.0.0"
+description = "MCP server that exposes Telegram Bot API as tools"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=2.0",
+    "httpx>=0.27",
+]
+
+[project.scripts]
+telegram-bot-mcp = "telegram_bot_mcp.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/telegram_bot_mcp"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
