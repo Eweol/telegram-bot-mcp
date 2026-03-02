@@ -12,7 +12,7 @@ RUN npm install @node2flow/telegram-bot-mcp@${VERSION}
 # Pin MCP SDK to version the package was tested with.
 # Newer SDK versions have a Zod 4 compat layer that crashes on
 # raw JSON Schema objects (v3Schema.safeParseAsync is not a function).
-RUN npm install @modelcontextprotocol/sdk@1.26.0
+RUN npm install @modelcontextprotocol/sdk@1.19.1
 
 # Patch: replace GET /mcp SSE handler with 405 response.
 # mcp-auth-proxy v2.5.3 panics when reverse-proxying SSE streams, which
