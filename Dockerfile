@@ -8,8 +8,8 @@ COPY pyproject.toml README.md ./
 COPY src/ src/
 RUN pip install --no-cache-dir .
 
-# Non-root user for security
-RUN useradd -r -u 1000 -g users mcp
+# Non-root user for security (home dir needed by OIDCProxy for session storage)
+RUN useradd -r -m -u 1000 -g users mcp
 USER mcp
 
 ENV TELEGRAM_BOT_TOKEN="" \
