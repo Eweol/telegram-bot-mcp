@@ -55,7 +55,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ vars.OWN_REGISTRY }}/unimain/telegram-bot-mcp:${{ steps.gitversion.outputs.assemblySemVer }}
+            ${{ vars.OWN_REGISTRY }}/${{ vars.OWN_REGISTRY_IMAGE }}:${{ steps.gitversion.outputs.assemblySemVer }}
       - name: Cleanup Builder
         if: always()
         run: |
