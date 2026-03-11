@@ -57,6 +57,7 @@ jobs:
           MINOR=$(echo $LATEST_TAG | sed 's/^v//' | cut -d. -f2)
           PATCH=$(echo $LATEST_TAG | sed 's/^v//' | cut -d. -f3)
           echo "version=${MAJOR}.${MINOR}.${PATCH}.${COMMITS_SINCE}" >> $GITHUB_OUTPUT
+          echo "owner=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -78,5 +79,5 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner | lower }}/telegram-bot-mcp:${{ steps.version.outputs.version }}
-            ghcr.io/${{ github.repository_owner | lower }}/telegram-bot-mcp:latest
+            ghcr.io/${{ steps.version.outputs.owner }}/telegram-bot-mcp:${{ steps.version.outputs.version }}
+            ghcr.io/${{ steps.version.outputs.owner }}/telegram-bot-mcp:latest
