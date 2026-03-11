@@ -10,10 +10,17 @@ RUN pip install --no-cache-dir .
 
 # Non-root user for security (home dir needed by OIDCProxy for session storage)
 RUN useradd -r -m -u 1000 -g users mcp
+
+# Persistent data directory for chat store
+RUN mkdir -p /data && chown mcp:users /data
+
 USER mcp
 
 ENV TELEGRAM_BOT_TOKEN="" \
-    PORT=8000
+    PORT=8000 \
+    CHAT_STORE_PATH=/data/chats.json
+
+VOLUME /data
 
 EXPOSE 8000
 

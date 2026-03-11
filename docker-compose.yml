@@ -1,0 +1,15 @@
+services:
+  telegram-bot-mcp:
+    image: ghcr.io/your-org/telegram-bot-mcp:latest
+    ports:
+      - "8000:8000"
+    environment:
+      TELEGRAM_BOT_TOKEN: "${TELEGRAM_BOT_TOKEN}"
+      # AUTH_TOKEN: "${AUTH_TOKEN}"      # optional: static bearer auth
+      # KNOWN_CHATS: "Chat=12345"        # optional: pre-configured chats
+    volumes:
+      - chat-data:/data
+    restart: unless-stopped
+
+volumes:
+  chat-data:

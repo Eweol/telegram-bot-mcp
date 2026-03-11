@@ -87,8 +87,17 @@ python -m telegram_bot_mcp --transport streamable-http --port 8000
 ```bash
 docker run -p 8000:8000 \
   -e TELEGRAM_BOT_TOKEN=your_token_here \
-  ghcr.io/your-org/telegram-bot-mcp:latest \
-  python -m telegram_bot_mcp --transport streamable-http --port 8000
+  -v telegram-data:/data \
+  ghcr.io/your-org/telegram-bot-mcp:latest
+```
+
+The named volume (`telegram-data:/data`) persists discovered chat IDs across container restarts.
+
+Or use Docker Compose:
+
+```bash
+cp .env.example .env  # fill in your token
+docker compose up -d
 ```
 
 ## License
