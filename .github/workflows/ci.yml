@@ -78,5 +78,5 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/telegram-bot-mcp:${{ steps.version.outputs.version }}
-            ghcr.io/${{ github.repository_owner }}/telegram-bot-mcp:latest
+            ghcr.io/${{ github.repository_owner | lower }}/telegram-bot-mcp:${{ steps.version.outputs.version }}
+            ghcr.io/${{ github.repository_owner | lower }}/telegram-bot-mcp:latest
