@@ -83,7 +83,7 @@ def _make_session_oidc_proxy(
                     token=upstream.access_token,
                     client_id=upstream.client_id,
                     scopes=scopes,
-                    expires_at=int(upstream.expires_at),
+                    expires_at=int(payload["exp"]),  # local JWT exp = session_lifetime, NOT upstream token expiry
                 )
             except Exception as e:
                 logger.debug("Session validation failed: %s", e)
