@@ -43,6 +43,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          pull: true
           platforms: linux/amd64,linux/arm64
           build-args: |
             VERSION=${{ steps.gitversion.outputs.version }}
