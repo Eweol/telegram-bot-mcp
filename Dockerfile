@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM python:3.13-slim
+FROM python:3.13-alpine
 
-RUN apt-get update && apt-get upgrade -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apk upgrade --no-cache
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir . \
  && pip uninstall -y pip setuptools wheel
 
 # Non-root user for security (home dir needed by OIDCProxy for session storage)
-RUN useradd -r -m -u 1000 -g users mcp
+RUN adduser -D -u 1000 -G users mcp
 
 # Persistent data directory for chat store
 RUN mkdir -p /data && chown mcp:users /data
