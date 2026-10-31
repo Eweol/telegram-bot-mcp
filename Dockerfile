@@ -8,7 +8,9 @@ WORKDIR /app
 # Copy source and metadata together — hatchling needs src/ at build time
 COPY pyproject.toml README.md ./
 COPY src/ src/
-RUN pip install --no-cache-dir .
+# pip/setuptools are build-only: pip bundles stale vendored libs (urllib3, msgpack) that trigger scanner findings
+RUN pip install --no-cache-dir . \
+ && pip uninstall -y pip setuptools wheel
 
 # Non-root user for security (home dir needed by OIDCProxy for session storage)
 RUN useradd -r -m -u 1000 -g users mcp
